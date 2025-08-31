@@ -105,11 +105,19 @@ vim.opt.number = true
 vim.opt.relativenumber = true
 
 -- Tabbing.
-vim.opt.tabstop = 4
-vim.opt.shiftwidth = 4
-vim.opt.expandtab = false
 vim.opt.smartindent = true
 vim.opt.autoindent = true
+
+vim.opt_local.expandtab = true
+vim.opt_local.tabstop = 4
+vim.opt_local.shiftwidth = 4
+
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = 'python',
+  callback = function()
+    vim.opt_local.expandtab = false
+  end,
+})
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = 'a'
