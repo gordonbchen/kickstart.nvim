@@ -196,7 +196,7 @@ vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
 vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
 
 vim.keymap.set('i', 'jk', '<Esc>')
-vim.keymap.set('n', 'ss', ':w<CR>')
+vim.keymap.set('n', 'sl', ':w<CR>')
 
 -- Keybinds to make split navigation easier.
 --  Use CTRL+<hjkl> to switch between windows
@@ -279,6 +279,41 @@ require('lazy').setup({
         delete = { text = '_' },
         topdelete = { text = '‾' },
         changedelete = { text = '~' },
+      },
+    },
+  },
+
+  {
+    -- Side-by-side Git diffs and file history
+    'sindrets/diffview.nvim',
+    -- Load on demand (saves startup time)
+    cmd = { 'DiffviewOpen', 'DiffviewClose', 'DiffviewToggleFiles', 'DiffviewFocusFiles', 'DiffviewFileHistory' },
+    keys = {
+      { '<leader>gd', '<cmd>DiffviewOpen<cr>', desc = 'Git Diff (Diffview)' },
+      { '<leader>gD', '<cmd>DiffviewOpen HEAD~1<cr>', desc = 'Git Diff vs HEAD~1' },
+      { '<leader>gh', '<cmd>DiffviewFileHistory %<cr>', desc = 'Git File History (current file)' },
+      { '<leader>gH', '<cmd>DiffviewFileHistory<cr>', desc = 'Git Repo History' },
+      { '<leader>gx', '<cmd>DiffviewClose<cr>', desc = 'Close Diffview' },
+      { '<leader>gt', '<cmd>DiffviewToggleFiles<cr>', desc = 'Toggle Diffview Files Panel' },
+    },
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      -- Icons are optional but make the UI clearer (works even if you set have_nerd_font=false)
+      { 'nvim-tree/nvim-web-devicons', enabled = true },
+    },
+    opts = {
+      -- Reasonable defaults; tweak if you like
+      enhanced_diff_hl = true, -- Use Treesitter/hl for clearer diffs
+      view = {
+        -- default layout; alternatives: 'diff3_horizontal', etc.
+        default = { winbar_info = true },
+      },
+      file_panel = { win_config = { width = 24 } },
+      hooks = {
+        -- Example: keep signcolumn slim inside diff buffers
+        diff_buf_read = function()
+          vim.opt_local.signcolumn = 'yes'
+        end,
       },
     },
   },
