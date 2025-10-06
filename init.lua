@@ -196,7 +196,7 @@ vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
 vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
 
 vim.keymap.set('i', 'jk', '<Esc>')
-vim.keymap.set('n', 'sl', ':w<CR>')
+vim.keymap.set('n', 's', ':w<CR>')
 
 -- Keybinds to make split navigation easier.
 --  Use CTRL+<hjkl> to switch between windows
@@ -320,15 +320,7 @@ require('lazy').setup({
 
   {
     'sphamba/smear-cursor.nvim',
-    opts = {
-      stiffness = 0.8,
-      trailing_stiffness = 0.6,
-      stiffness_insert_mode = 0.7,
-      trailing_stiffness_insert_mode = 0.7,
-      damping = 0.95,
-      damping_insert_mode = 0.95,
-      distance_stop_animating = 0.5,
-    },
+    opts = {},
   },
 
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
