@@ -324,6 +324,17 @@ require('lazy').setup({
     opts = {},
   },
 
+  {
+    "lervag/vimtex",
+    lazy = false,     -- we don't want to lazy load VimTeX
+    init = function()
+      vim.g.vimtex_view_method = "zathura"
+      vim.g.vimtex_compiler_method = "latexmk"
+      vim.g.vimtex_compiler_latexmk = {out_dir = "latexbuild"}
+      vim.g.vimtex_quickfix_open_on_warning = 0
+    end
+  },
+
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
   --
   -- This is often very useful to both group configuration, as well as handle
