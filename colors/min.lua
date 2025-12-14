@@ -30,7 +30,7 @@ local cursor_sel = "#222244"
 
 
 -- 6. Core UI groups
-set(0, "Normal",       { fg = cyan,       bg = black })   -- background.
+set(0, "Normal",       { fg = white,       bg = black })   -- background.
 set(0, "CursorLine",   { bg = cursor_sel })               -- line cursor is on.
 set(0, "NormalFloat",  { fg = cyan,       bg = black })   -- floating background.
 set(0, "LineNr",       { fg = dark_grey,  bg = black })   -- line #s.
