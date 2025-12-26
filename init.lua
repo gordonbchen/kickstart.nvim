@@ -105,12 +105,13 @@ vim.o.number = true
 vim.o.relativenumber = true
 
 -- Tabbing.
-vim.opt.smartindent = true
-vim.opt.autoindent = true
+vim.o.smartindent = true
+vim.o.autoindent = true
 
-vim.opt_local.expandtab = true
-vim.opt_local.tabstop = 4
-vim.opt_local.shiftwidth = 4
+vim.o.expandtab = true
+vim.o.tabstop = 4
+vim.o.shiftwidth = 4
+vim.o.softtabstop = 4
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.o.mouse = 'a'
