@@ -325,12 +325,6 @@ require('lazy').setup({
       use_icons = false,
     },
   },
-
-  {
-    'sphamba/smear-cursor.nvim',
-    opts = {},
-  },
-
   {
     "lervag/vimtex",
     lazy = false,     -- we don't want to lazy load VimTeX
