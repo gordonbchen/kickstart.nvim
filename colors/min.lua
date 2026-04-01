@@ -15,7 +15,7 @@ local set = vim.api.nvim_set_hl
 
 -- 5. Define a simple palette
 local black      = "#000000"
-local blue_black = "#0a0a18"
+local blue_black = "#151530"
 local dark_grey  = "#606060"
 local light_grey = "#c0c0c0"
 local white      = "#ffffff"
@@ -32,7 +32,7 @@ local cursor_sel = "#222244"
 -- 6. Core UI groups
 set(0, "Normal",       { fg = white,       bg = black })   -- background.
 set(0, "CursorLine",   { bg = cursor_sel })               -- line cursor is on.
-set(0, "NormalFloat",  { fg = cyan,       bg = black })   -- floating background.
+set(0, "NormalFloat",  { fg = cyan,       bg = blue_black })   -- floating background.
 set(0, "LineNr",       { fg = dark_grey,  bg = black })   -- line #s.
 set(0, "CursorLineNr", { fg = light_grey, bg = black })   -- line # cursor is on.
 set(0, "Visual",       { bg = cursor_sel })               -- visual mode highlight.
@@ -65,7 +65,7 @@ set(0, "PmenuSel",     { fg = cyan,     bg = cursor_sel })
 set(0, "PmenuSbar",    { bg = "#16161e" })
 set(0, "PmenuThumb",   { bg = "#2f334d" })
 
-set(0, "WhichKeyNormal",    {fg = cyan, bg = "#111122" })
+set(0, "WhichKeyNormal",    {fg = cyan, bg = blue_black })
 set(0, "WhichKey",          {fg = orange})
 set(0, "WhichKeyGroup",     {fg = cyan})
 set(0, "WhichKeyDesc",      {fg = cyan})
