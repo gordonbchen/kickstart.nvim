@@ -1,7 +1,6 @@
 local M = {}
 
 local typst_watch_jobs = {}
-local opened_pdfs = {}
 
 local function notify(msg, level)
   vim.schedule(function()
@@ -30,6 +29,7 @@ local function parse_typst_diagnostics(lines)
       if not kind then
         kind, msg = line:match('^(warning):%s*(.*)$')
       end
+
       if kind then
         pending_kind = kind
         pending_message = msg ~= '' and msg or kind
@@ -59,13 +59,15 @@ local function parse_typst_diagnostics(lines)
           if next_line:match('^%s*%-%->%s*') then
             break
           end
+
           if next_line:match('^(error):') or next_line:match('^(warning):') then
             break
           end
 
           if not next_line:match('^%s*|')
             and not next_line:match('^%s*[%d]+%s*|')
-            and not next_line:match('^%s*=') then
+            and not next_line:match('^%s*=')
+          then
             table.insert(text_parts, next_line)
           end
 
@@ -114,22 +116,23 @@ local function set_qf_from_typst(lines, title)
     })
 
     if #items > 0 then
-      vim.cmd('copen')
+      vim.cmd('botright copen')
+      vim.cmd('wincmd p')
     else
       vim.cmd('cclose')
     end
   end)
 end
 
-local function maybe_open_zathura(pdf)
-  if opened_pdfs[pdf] then
-    return
-  end
+local function open_zathura(pdf)
+  -- Always open Zathura whenever a new Typst watch command starts.
+  -- This avoids stale state when the user manually closes Zathura.
+  local cmd = string.format('setsid -f zathura %q >/dev/null 2>&1', pdf)
+  local job_id = vim.fn.jobstart({ 'sh', '-c', cmd }, {
+    detach = true,
+  })
 
-  local job_id = vim.fn.jobstart({ 'zathura', pdf }, { detach = true })
-  if job_id > 0 then
-    opened_pdfs[pdf] = true
-  else
+  if job_id <= 0 then
     notify('Failed to open zathura', vim.log.levels.ERROR)
   end
 end
@@ -181,7 +184,6 @@ function M.start_watch()
       end
 
       clear_qf()
-      maybe_open_zathura(pdf)
 
       local watch_chunk = {}
 
@@ -198,7 +200,10 @@ function M.start_watch()
 
         for _, line in ipairs(data) do
           if line and line ~= '' then
-            if line:match('compiled successfully') or line:match('writing to') then
+            if line:match('compiled successfully')
+              or line:match('writing to')
+              or line:match('watching')
+            then
               watch_chunk = {}
               clear_qf()
             else
@@ -234,6 +239,7 @@ function M.start_watch()
       end
 
       typst_watch_jobs[file] = job_id
+      open_zathura(pdf)
       notify('Watching ' .. vim.fn.fnamemodify(file, ':t'))
     end,
   })
