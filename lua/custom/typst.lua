@@ -124,16 +124,74 @@ local function set_qf_from_typst(lines, title)
   end)
 end
 
+local function zathura_log_path()
+  return vim.fn.stdpath('cache') .. '/typst-zathura.log'
+end
+
+local function append_zathura_log(lines)
+  if not lines then
+    return
+  end
+
+  local nonempty = {}
+  for _, line in ipairs(lines) do
+    if line and line ~= '' then
+      table.insert(nonempty, line)
+    end
+  end
+
+  if #nonempty == 0 then
+    return
+  end
+
+  vim.fn.writefile(nonempty, zathura_log_path(), 'a')
+end
+
 local function open_zathura(pdf)
-  -- Always open Zathura whenever a new Typst watch command starts.
-  -- This avoids stale state when the user manually closes Zathura.
-  local cmd = string.format('setsid -f zathura %q >/dev/null 2>&1', pdf)
-  local job_id = vim.fn.jobstart({ 'sh', '-c', cmd }, {
-    detach = true,
+  if vim.fn.executable('zathura') ~= 1 then
+    notify('zathura is not executable or not in PATH', vim.log.levels.ERROR)
+    return
+  end
+
+  if vim.fn.filereadable(pdf) ~= 1 then
+    notify('PDF does not exist yet: ' .. pdf, vim.log.levels.ERROR)
+    return
+  end
+
+  vim.fn.writefile({
+    '',
+    '--- zathura launch: ' .. os.date('%Y-%m-%d %H:%M:%S') .. ' ---',
+    'pdf: ' .. pdf,
+  }, zathura_log_path(), 'a')
+
+  local job_id = vim.fn.jobstart({ 'zathura', '--fork', pdf }, {
+    detach = false,
+    stdout_buffered = true,
+    stderr_buffered = true,
+
+    on_stdout = function(_, data)
+      append_zathura_log(data)
+    end,
+
+    on_stderr = function(_, data)
+      append_zathura_log(data)
+    end,
+
+    on_exit = function(_, code)
+      if code ~= 0 then
+        notify(
+          'zathura exited with code '
+            .. tostring(code)
+            .. '. See '
+            .. zathura_log_path(),
+          vim.log.levels.ERROR
+        )
+      end
+    end,
   })
 
   if job_id <= 0 then
-    notify('Failed to open zathura', vim.log.levels.ERROR)
+    notify('Failed to start zathura', vim.log.levels.ERROR)
   end
 end
 
@@ -239,7 +297,11 @@ function M.start_watch()
       end
 
       typst_watch_jobs[file] = job_id
-      open_zathura(pdf)
+
+      vim.defer_fn(function()
+        open_zathura(pdf)
+      end, 150)
+
       notify('Watching ' .. vim.fn.fnamemodify(file, ':t'))
     end,
   })
