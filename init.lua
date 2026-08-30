@@ -103,7 +103,7 @@ vim.o.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
 vim.o.relativenumber = true
-vim.o.colorcolumn = '120'
+vim.o.colorcolumn = '110'
 
 -- Tabbing.
 vim.o.smartindent = true
@@ -623,7 +623,13 @@ require('lazy').setup({
 
           -- Execute a code action, usually your cursor needs to be on top of an error
           -- or a suggestion from your LSP for this to activate.
-          map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction', { 'n', 'x' })
+          map('<leader>ca', function()
+            local line = vim.api.nvim_win_get_cursor(0)[1]
+            vim.lsp.buf.code_action {
+              range = { start = { line, 0 }, ['end'] = { line, #vim.api.nvim_get_current_line() } },
+            }
+          end, '[C]ode [A]ction')
+          map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction', 'x')
 
           -- WARN: This is not Goto Definition, this is Goto Declaration.
           --  For example, in C this would take you to the header.
