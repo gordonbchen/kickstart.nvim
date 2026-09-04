@@ -82,7 +82,7 @@ set(0, "DiagnosticUnderlineInfo",  { undercurl = true, sp = cyan })
 set(0, "DiagnosticUnderlineHint",  { undercurl = true, sp = green })
 
 -- Diffview.
-set (0, "DiffAdd", {bg = "#105010"})
-set(0, "DiffDelete", {bg = "#701010"})
+set (0, "DiffAdd", {bg = "#005000"})
+set(0, "DiffDelete", {bg = "#700000"})
 set(0, "DiffChange", {bg = "#101030"})
-set(0, "DiffText", {bg = "#f01010"})
+set(0, "DiffText", {bg = "#703000"})
